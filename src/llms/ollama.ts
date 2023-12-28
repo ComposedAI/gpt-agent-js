@@ -25,13 +25,13 @@ interface MessageResponse {
 
 export const createChatSession: CreateChatSession = ({
   model = "mistral",
-  temperature = 0.5,
+  temperature = 0.7,
   stream = false,
 }) => {
   const history: string[] = [];
 
   function ask(prompt: string): Promise<CompletionResponse> {
-    const message = { model, prompt, stream };
+    const message = { model, prompt, stream, options: { temperature } };
 
     return makeRequest<MessageRequest>(
       "http://localhost:11434/api/generate",

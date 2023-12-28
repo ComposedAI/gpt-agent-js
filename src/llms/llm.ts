@@ -65,17 +65,33 @@ function getOptions<T>(
   });
 }
 
-async function sendRequest<T>(
-  url: string,
-  options: RequestOptions,
-  data?: T
-): Promise<string> {
-  const response = await fetch(url, {
-    method: data ? "POST" : "GET",
-    body: data ? JSON.stringify(data) : undefined,
+function sendRequest<T>(url: string, options: RequestOptions, body?: T) {
+  return new Promise<string>((resolve) => {
+    const { protocol } = new URL(url);
+    const request = protocol === "https:" ? https.request : http.request;
+
+    const req = request(url, options, (res) => {
+      let data = "";
+
+      res.on("data", (chunk) => {
+        data += chunk;
+      });
+
+      res.on("end", () => {
+        resolve(data);
+      });
+    });
+
+    req.on("error", (err) => {
+      console.error(err);
+      throw err;
+    });
+
+    const postData = JSON.stringify(body);
+
+    req.write(postData);
+    req.end();
   });
-  const body = await response.text();
-  return body;
 }
 
 export function makeRequest<T>(url: string, body: T, apiKey?: string) {
