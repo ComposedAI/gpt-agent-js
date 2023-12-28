@@ -65,7 +65,12 @@ function getOptions<T>(
   });
 }
 
-function sendRequest<T>(url: string, options: RequestOptions, body?: T) {
+function sendRequest<T>(
+  url: string,
+  options: RequestOptions,
+  body?: T,
+  callback?: (chunk: string) => void
+) {
   return new Promise<string>((resolve) => {
     const { protocol } = new URL(url);
     const request = protocol === "https:" ? https.request : http.request;
@@ -74,7 +79,15 @@ function sendRequest<T>(url: string, options: RequestOptions, body?: T) {
       let data = "";
 
       res.on("data", (chunk) => {
-        data += chunk;
+        if (callback) {
+          if (Buffer.isBuffer(chunk)) {
+            callback(chunk.toString());
+          } else if (typeof chunk === "string") {
+            callback(chunk);
+          }
+        } else {
+          data += chunk;
+        }
       });
 
       res.on("end", () => {
@@ -94,8 +107,13 @@ function sendRequest<T>(url: string, options: RequestOptions, body?: T) {
   });
 }
 
-export function makeRequest<T>(url: string, body: T, apiKey?: string) {
+export function makeRequest<T>(
+  url: string,
+  body: T,
+  apiKey?: string,
+  callback?: (chunk: string) => void
+) {
   return getOptions(url, body, apiKey).then((options) => {
-    return sendRequest(url, options, body);
+    return sendRequest(url, options, body, callback);
   });
 }

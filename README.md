@@ -23,8 +23,8 @@ const { Agent } = require("gpt-agent-js");
 
 - [ ] Add support for ollama API.
 - [ ] Add support for GPT-3 API.
-- [ ] Add support for agents to plan and execute.
 - [ ] Add support for agents to communicate with each other.
+- [ ] Add support for agents to plan and execute.
 - [ ] Add support for MemGPT.
 - [ ] Add support for running agent in browser by using web workers.
 - [ ] Add support for saving and loading agent memory.
