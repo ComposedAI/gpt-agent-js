@@ -14,6 +14,9 @@ const chatGPTSession = chatGPT.createChatSession({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+const devMessage = "Write a hello world web page";
+const genQuestion = "Can you search the internet to answer questions?";
+
 ollamaSession
-  .ask("Write a hello world web page", (resp) => process.stdout.write(resp))
+  .ask(genQuestion, (resp) => process.stdout.write(resp))
   .then(console.log);

@@ -65,6 +65,7 @@ const { Agent } = require("gpt-agent-js");
 - [Continue](https://continue.dev) - An open-source autopilot in your IDE
 - [GPT Pilot](https://github.com/Pythagora-io/gpt-pilot) - GPT Pilot is a true AI developer that writes code, debugs it, talks to you when it needs help, etc.
 - [Mistral as Code Assistant](https://www.e2enetworks.com/blog/how-to-leverage-mistral-7b-llm-as-a-coding-assistant)
+- [The Art of Effortless Programming](https://medium.com/javascript-scene/the-art-of-effortless-programming-3e1860abe1d3)
 
 ### OpenAI
 

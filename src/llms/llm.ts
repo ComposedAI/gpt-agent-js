@@ -119,7 +119,6 @@ export interface RequestParams<T> {
   callback?: (chunk: string) => void;
 }
 
-// TODO: make function params a single object
 // TODO: support callback types for beyond text responses
 export function makeRequest<T>({
   url,

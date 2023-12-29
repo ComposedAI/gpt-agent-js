@@ -46,7 +46,7 @@ type MessageResponse = {
 // TODO: Add complete chat conversation by including history in the request for context
 // TODO: Add support for other endpoints
 
-function chatCompletion(
+async function chatCompletion(
   apiKey: string,
   model: string,
   temperature: number,
@@ -59,16 +59,17 @@ function chatCompletion(
     top_p: 1,
   };
 
-  return makeRequest<MessageRequest>({
-    url: "https://api.openai.com/v1/chat/completions",
-    body,
-    apiKey,
-  })
-    .then((data) => JSON.parse(data) as MessageResponse)
-    .catch((error) => {
-      console.error(error);
-      throw error;
+  try {
+    const data = await makeRequest<MessageRequest>({
+      url: "https://api.openai.com/v1/chat/completions",
+      body,
+      apiKey,
     });
+    return JSON.parse(data) as MessageResponse;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
 
 export const createChatSession: CreateChatSession = ({
@@ -83,21 +84,22 @@ export const createChatSession: CreateChatSession = ({
 
   const history: Message[] = [];
 
-  function ask(prompt: string): Promise<CompletionResponse> {
+  async function ask(prompt: string): Promise<CompletionResponse> {
     const message = { role: MessageRoleEnum.user, content: prompt };
 
-    return chatCompletion(apiKey!, model, temperature, [...history, message])
-      .then((response) => {
-        const messages = response.choices.map((choice) => choice.message);
-        history.push(message, ...messages);
-        return response;
-      })
-      .then((response) => ({
-        model: response.model,
-        response: response.choices
-          .map((choice) => choice.message.content)
-          .join("\n"),
-      }));
+    const response = await chatCompletion(apiKey!, model, temperature, [
+      ...history,
+      message,
+    ]);
+    const messages = response.choices.map((choice) => choice.message);
+    history.push(message, ...messages);
+    const response_1 = response;
+    return {
+      model: response_1.model,
+      response: response_1.choices
+        .map((choice_1) => choice_1.message.content)
+        .join("\n"),
+    };
   }
 
   function historyToChatResponse(history: Message[]): ChatResponse[] {
