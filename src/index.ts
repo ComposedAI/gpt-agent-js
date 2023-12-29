@@ -14,4 +14,6 @@ const chatGPTSession = chatGPT.createChatSession({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-ollamaSession.ask("Write a hello world web page").then(console.log);
+ollamaSession
+  .ask("Write a hello world web page", (resp) => process.stdout.write(resp))
+  .then(console.log);

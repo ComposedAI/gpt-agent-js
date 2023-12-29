@@ -1,6 +1,7 @@
 import {
   ChatResponse,
   ChatRoleEnum,
+  CompletionCallBack,
   CompletionResponse,
   CreateChatSession,
   makeRequest,
@@ -29,8 +30,8 @@ export const createChatSession: CreateChatSession = ({
 }) => {
   const history: string[] = [];
 
-  function ask(prompt: string): Promise<CompletionResponse> {
-    const message = { model, prompt, stream, options: { temperature } };
+  async function ask(prompt: string, streamCallback?: CompletionCallBack) {
+    const body = { model, prompt, stream, options: { temperature } };
     let response = "";
     let streamResponse: MessageResponse;
 
@@ -38,19 +39,20 @@ export const createChatSession: CreateChatSession = ({
       // if this is a buffer we are in streaming mode at least for ollama and openai APIs
       const block = JSON.parse(data) as MessageResponse;
       response += block.response;
-      process.stdout.write(block.response);
+      if (streamCallback) {
+        streamCallback(block.response);
+      }
 
       if (block.done) {
         streamResponse = { ...block, response };
       }
     };
 
-    return makeRequest<MessageRequest>(
-      "http://localhost:11434/api/generate",
-      message,
-      undefined,
-      stream ? streamHandler : undefined
-    ).then((data) =>
+    return makeRequest<MessageRequest>({
+      url: "http://localhost:11434/api/generate",
+      body,
+      callback: stream ? streamHandler : undefined,
+    }).then((data) =>
       stream ? streamResponse : (JSON.parse(data) as MessageResponse)
     );
   }

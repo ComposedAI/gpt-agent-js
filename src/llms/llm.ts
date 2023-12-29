@@ -23,8 +23,13 @@ export interface ChatResponse {
   content: string;
 }
 
+export type CompletionCallBack = (resp: string) => void;
+
 export interface ChatSession {
-  ask: (prompt: string) => Promise<CompletionResponse>;
+  ask: (
+    prompt: string,
+    streamCallback?: CompletionCallBack
+  ) => Promise<CompletionResponse>;
   getHistory: () => ChatResponse[];
   clearHistory: () => void;
 }
@@ -107,12 +112,21 @@ function sendRequest<T>(
   });
 }
 
-export function makeRequest<T>(
-  url: string,
-  body: T,
-  apiKey?: string,
-  callback?: (chunk: string) => void
-) {
+export interface RequestParams<T> {
+  url: string;
+  body?: T;
+  apiKey?: string;
+  callback?: (chunk: string) => void;
+}
+
+// TODO: make function params a single object
+// TODO: support callback types for beyond text responses
+export function makeRequest<T>({
+  url,
+  body,
+  apiKey,
+  callback,
+}: RequestParams<T>) {
   return getOptions(url, body, apiKey).then((options) => {
     return sendRequest(url, options, body, callback);
   });

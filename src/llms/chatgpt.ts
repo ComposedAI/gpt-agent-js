@@ -52,18 +52,18 @@ function chatCompletion(
   temperature: number,
   messages: Message[] = []
 ) {
-  const request: MessageRequest = {
+  const body: MessageRequest = {
     model,
     messages,
     temperature,
     top_p: 1,
   };
 
-  return makeRequest<MessageRequest>(
-    "https://api.openai.com/v1/chat/completions",
-    request,
-    apiKey
-  )
+  return makeRequest<MessageRequest>({
+    url: "https://api.openai.com/v1/chat/completions",
+    body,
+    apiKey,
+  })
     .then((data) => JSON.parse(data) as MessageResponse)
     .catch((error) => {
       console.error(error);
