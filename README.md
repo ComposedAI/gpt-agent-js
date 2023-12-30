@@ -37,8 +37,10 @@ const { Agent } = require("gpt-agent-js");
 
 ## TODO
 
-- [ ] Add support for ollama API.
-- [ ] Add support for GPT-3 API.
+- [x] Add support for ollama API.
+- [x] Add support for GPT-3 API.
+- [ ] Add memory capability for chat history for all llms
+- [ ] Add OpenAI function support to ollama
 - [ ] Allow library to be used in node and the browser.
   - [TypeScript: create library for NodeJS and Browser](https://medium.com/collaborne-engineering/typescript-create-library-for-nodejs-and-browser-fece291d517f)
   - [How to create a TypeScript library](https://medium.com/@koresar/how-to-create-a-typescript-library-1e88a7dc1fd)
